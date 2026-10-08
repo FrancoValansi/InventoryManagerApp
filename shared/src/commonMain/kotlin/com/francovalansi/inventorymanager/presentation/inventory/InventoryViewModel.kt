@@ -63,7 +63,7 @@ class InventoryViewModel : ViewModel() {
         }
     }
 
-    fun deleteInventory(id: Long) {
+    fun deleteInventory(id: String) {
         viewModelScope.launch {
             try {
                 _loading.value = true

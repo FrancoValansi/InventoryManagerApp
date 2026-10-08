@@ -27,7 +27,7 @@ class InventoryRepository {
             )
     }
 
-    suspend fun deleteInventory(id: Long) {
+    suspend fun deleteInventory(id: String) {
         supabase
             .from("inventories")
             .delete {
