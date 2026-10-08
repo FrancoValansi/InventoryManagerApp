@@ -33,6 +33,7 @@ import com.francovalansi.inventorymanager.presentation.components.FormField
 
 @Composable
 fun InventoryScreen(
+    onInventoryClick: (Inventory) -> Unit,
     viewModel: InventoryViewModel = remember { InventoryViewModel() }
 ) {
     val inventories by viewModel.inventories.collectAsState()
@@ -95,7 +96,8 @@ fun InventoryScreen(
                 ) {
                     Button(
                         onClick = {
-                            // Más adelante: abrir productos
+                            // Informa a App qué inventario seleccionó el usuario.
+                            onInventoryClick(inventory)
                         },
                         modifier = Modifier.weight(1f)
                     ) {
