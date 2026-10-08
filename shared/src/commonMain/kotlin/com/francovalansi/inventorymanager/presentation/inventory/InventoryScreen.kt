@@ -1,5 +1,12 @@
 package com.francovalansi.inventorymanager.presentation.inventory
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.OutlinedButton
+import com.francovalansi.inventorymanager.data.model.Inventory
+import com.francovalansi.inventorymanager.presentation.components.ConfirmationDialog
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,6 +41,10 @@ fun InventoryScreen(
 
     var showCreateForm by remember {
         mutableStateOf(false)
+    }
+
+    var inventoryToDelete by remember {
+        mutableStateOf<Inventory?>(null)
     }
 
     var name by remember {
@@ -79,14 +90,27 @@ fun InventoryScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(inventories.sortedBy { it.name.lowercase() }) { inventory ->
-
-                Button(
-                    onClick = {
-                        // Más adelante: abrir productos
-                    },
+                Row(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(inventory.name)
+                    Button(
+                        onClick = {
+                            // Más adelante: abrir productos
+                        },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(inventory.name)
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    OutlinedButton(
+                        onClick = {
+                            inventoryToDelete = inventory
+                        }
+                    ) {
+                        Text("Eliminar")
+                    }
                 }
             }
         }
@@ -128,6 +152,22 @@ fun InventoryScreen(
                 ) {
                     Text("Cancelar")
                 }
+            }
+        )
+    }
+
+    inventoryToDelete?.let { inventory ->
+        ConfirmationDialog(
+            title = "Eliminar inventario",
+            message = "¿Estás seguro de que querés eliminar \"${inventory.name}\"?",
+            onConfirm = {
+                inventory.id?.let { id ->
+                    viewModel.deleteInventory(id)
+                }
+                inventoryToDelete = null
+            },
+            onDismiss = {
+                inventoryToDelete = null
             }
         )
     }
