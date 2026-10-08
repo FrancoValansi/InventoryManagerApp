@@ -10,7 +10,7 @@ class AuthRepository {
         email: String,
         password: String
     ) {
-        supabase.auth.signUpWith(Email) {
+        supabase.auth.signUpWith(Email, redirectUrl = "inventorymanager://login-callback") {
             this.email = email
             this.password = password
         }
