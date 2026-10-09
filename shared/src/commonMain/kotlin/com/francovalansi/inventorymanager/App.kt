@@ -1,3 +1,4 @@
+
 package com.francovalansi.inventorymanager
 
 import androidx.compose.material3.MaterialTheme
@@ -5,6 +6,11 @@ import androidx.compose.runtime.*
 import com.francovalansi.inventorymanager.presentation.auth.AuthScreen
 import com.francovalansi.inventorymanager.presentation.inventory.InventoryScreen
 import com.francovalansi.inventorymanager.presentation.product.ProductScreen
+
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.ui.Modifier
+import androidx.compose.material3.Surface
 
 @Composable
 fun App() {
@@ -16,31 +22,39 @@ fun App() {
     var selectedInventoryName by remember { mutableStateOf<String?>(null) }
 
     MaterialTheme {
-
-        // Si no inició sesión, mostramos la pantalla de autenticación.
-        if (!loggedIn) {
-            AuthScreen(
-                onLoggedIn = {
-                    loggedIn = true
-                }
-            )
-
-            // Si inició sesión pero no seleccionó un inventario,
-            // mostramos la lista de inventarios.
-        } else if (selectedInventoryId == null) {
-            InventoryScreen(
-                onInventoryClick = { inventory ->
-                    selectedInventoryId = inventory.id
-                    selectedInventoryName = inventory.name
-                }
-            )
-
-            // Si seleccionó un inventario, mostramos sus productos.
-        } else {
-            ProductScreen(
-                inventoryId = selectedInventoryId!!,
-                inventoryName = selectedInventoryName ?: ""
-            )
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .safeDrawingPadding()
+        ) {
+            // Si no inició sesión, mostramos la pantalla de autenticación.
+            if (!loggedIn) {
+                AuthScreen(
+                    onLoggedIn = {
+                        loggedIn = true
+                    }
+                )
+                // Si inició sesión pero no seleccionó un inventario,
+                // mostramos la lista de inventarios.
+            } else if (selectedInventoryId == null) {
+                InventoryScreen(
+                    onInventoryClick = { inventory ->
+                        selectedInventoryId = inventory.id
+                        selectedInventoryName = inventory.name
+                    }
+                )
+                // Si seleccionó un inventario, mostramos sus productos.
+            } else {
+                ProductScreen(
+                    inventoryId = selectedInventoryId!!,
+                    inventoryName = selectedInventoryName ?: "",
+                    onBack = {
+                        // Limpia la selección para volver a los inventarios.
+                        selectedInventoryId = null
+                        selectedInventoryName = null
+                    }
+                )
+            }
         }
     }
 }

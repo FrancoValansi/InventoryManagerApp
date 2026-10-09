@@ -35,6 +35,7 @@ import com.francovalansi.inventorymanager.data.model.Product
 fun ProductScreen(
     inventoryId: String,
     inventoryName: String,
+    onBack: () -> Unit,
     viewModel: ProductViewModel = remember { ProductViewModel() }
 ) {
     // Observa la lista, el estado de carga y los errores del ViewModel.
@@ -63,6 +64,15 @@ fun ProductScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        // Permite volver a la lista de inventarios.
+        TextButton(
+            onClick = {
+                onBack()
+            }
+        ) {
+            Text("← Volver a Inventarios")
+        }
+
         Text(
             text = inventoryName,
             style = MaterialTheme.typography.headlineMedium
