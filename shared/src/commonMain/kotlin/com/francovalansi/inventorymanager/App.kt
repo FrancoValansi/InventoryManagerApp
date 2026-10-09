@@ -6,6 +6,9 @@ import androidx.compose.runtime.*
 import com.francovalansi.inventorymanager.presentation.auth.AuthScreen
 import com.francovalansi.inventorymanager.presentation.inventory.InventoryScreen
 import com.francovalansi.inventorymanager.presentation.product.ProductScreen
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+import com.francovalansi.inventorymanager.data.repository.AuthRepository
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
@@ -20,6 +23,27 @@ fun App() {
     // Guarda el inventario seleccionado para abrir sus productos.
     var selectedInventoryId by remember { mutableStateOf<String?>(null) }
     var selectedInventoryName by remember { mutableStateOf<String?>(null) }
+
+    // Permite ejecutar operaciones suspendidas desde la interfaz.
+    val scope = rememberCoroutineScope()
+    val authRepository = remember { AuthRepository() }
+
+    // Cierra la sesión y vuelve a la pantalla de inicio.
+    fun logout() {
+        scope.launch {
+            try {
+                authRepository.logout()
+
+                // Limpia el estado de navegación.
+                selectedInventoryId = null
+                selectedInventoryName = null
+                loggedIn = false
+            } catch (e: Exception) {
+                // Si falla, mantenemos la sesión en la interfaz.
+                e.printStackTrace()
+            }
+        }
+    }
 
     MaterialTheme {
         Surface(
@@ -41,6 +65,9 @@ fun App() {
                     onInventoryClick = { inventory ->
                         selectedInventoryId = inventory.id
                         selectedInventoryName = inventory.name
+                    },
+                    onLogout = {
+                        logout()
                     }
                 )
                 // Si seleccionó un inventario, mostramos sus productos.
